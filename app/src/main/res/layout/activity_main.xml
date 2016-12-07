@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:id="@+id/left"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/table_surface"
+        >
+
+        <LinearLayout
+            android:id="@+id/left1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:id="@+id/oppo1"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back"
+                android:layout_marginRight="20dp" />
+
+            <ImageView
+                android:id="@+id/oppo2"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/left2"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/flop1"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/flop2"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/flop3"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/left3"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:id="@+id/turn"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back"
+                android:layout_marginRight="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/river"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/left4"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:id="@+id/my1"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back"
+                android:layout_marginRight="20dp"
+                />
+
+            <ImageView
+                android:id="@+id/my2"
+                android:layout_height="120dp"
+                android:layout_width="86dp"
+                android:src="@drawable/card_back" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/aside_bg">
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/result"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:padding="20dp"/>
+        <TextView
+            android:id="@+id/res"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="请选牌"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            />
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pot"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:id="@+id/textView" />
+
+        <EditText
+            android:id="@+id/pot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_gravity="center"
+            android:hint="@string/pot_hint"
+            android:layout_marginBottom="30dp"
+            android:inputType="number"
+            />
+
+        <TextView
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/call_bet"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:id="@+id/textView2" />
+
+        <EditText
+            android:id="@+id/call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_gravity="center"
+            android:inputType="number"
+            android:hint="@string/call_bet_hint"
+            android:layout_marginBottom="30dp"/>
+
+        <Button
+            android:id="@+id/calculate"
+            android:layout_width="76dp"
+            android:layout_height="30dp"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:text="@string/calculate"
+            android:background="@drawable/cal_button"
+            />
+        <TextView
+            android:id="@+id/yn"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
+            android:text="Y or N"/>
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

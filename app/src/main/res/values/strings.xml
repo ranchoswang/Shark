@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Shark</string>
+    <string name="hello_world">Hello World</string>
+    <string name="card_height">120dp</string>
+    <string name="card_width">86dp</string>
+    <string name="result">胜率</string>
+    <string name="pot">底池</string>
+    <string name="call_bet">跟注</string>
+    <string name="calculate">计算</string>
+    <string name="positive">Y</string>
+    <string name="negative">N</string>
+    <string name="pot_hint">请输入底池</string>
+    <string name="call_bet_hint">请输入跟注</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
