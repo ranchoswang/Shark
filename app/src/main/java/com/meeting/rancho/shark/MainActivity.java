@@ -226,8 +226,12 @@ public class MainActivity extends Activity {
             res.setText("Started");
         }
         @Override
-        protected int[] doInBackground(String... params){
-            if(deck.getNum() != 52){
+        protected int[] doInBackground(String... params) {
+            if (deck.getNum() == 52) {
+                Toast.makeText(getApplicationContext(), "请至少输入一张实际牌", Toast.LENGTH_LONG).show();
+            }else if(randomRankIlligal()){
+                Toast.makeText(getApplicationContext(), "请输入合法的牌",Toast.LENGTH_LONG).show();
+            } else{
                 int threadN = 5;
                 Thread threads[] = new Thread[threadN];
                 int complx = ((int) Math.log10(deck.getComplexity()) + 1);
@@ -257,8 +261,6 @@ public class MainActivity extends Activity {
                     result[i] = stat[i];
                 result[3] = result[0] + result[1] + result[2];
                 return result;
-            }else {
-                Toast.makeText(getApplicationContext(), "请至少输入一张实际牌", Toast.LENGTH_LONG).show();
             }
             return null;
         }
@@ -287,11 +289,25 @@ public class MainActivity extends Activity {
             }
             int pot = Integer.parseInt(potS);
             int call = Integer.parseInt(callS);
-            if(pot * result[0] - call * result[2] > 0)
+            if(pot * result[0] * 1.0 - call * result[2] * 1.0 > 0)
                 yn.setText("跟吧！");
             else
                 yn.setText("弃！");
+        }
 
+        protected boolean randomRankIlligal(){
+            int[] suitmap = new int[15];
+            for(int i = 0; i < 2; i ++)
+                suitmap[deck.getMy()[i][1]] ++;
+            for(int i = 0; i < 5; i ++)
+                suitmap[deck.getPubCard()[i][1]] ++ ;
+            for(int i = 0; i < 2; i ++)
+                suitmap[deck.getOppo()[i][1]] ++ ;
+            for(int i = 1; i < 15; i ++){
+                if(suitmap[i] > 4 )
+                    return true;
+            }
+            return false;
         }
     }
 }
