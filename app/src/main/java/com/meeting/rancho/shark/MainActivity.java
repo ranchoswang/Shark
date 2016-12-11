@@ -1,7 +1,9 @@
 package com.meeting.rancho.shark;
 
 
+import android.app.AlertDialog;
 import android.os.AsyncTask;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.content.Intent;
 import android.app.Activity;
@@ -34,12 +36,14 @@ public class MainActivity extends Activity {
     private TextView yn;
     private EditText potText;
     private EditText callText;
+    private TextView details;
+    private ImageView delete;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int[] stat = new int[3];
+        int[] stat = new int[13];
         deck = new Deck(stat);
         setContentView(R.layout.activity_main);
 
@@ -59,6 +63,9 @@ public class MainActivity extends Activity {
 
         potText = (EditText) this.findViewById(R.id.pot);
         callText = (EditText) this.findViewById(R.id.call) ;
+
+        details = (TextView) this.findViewById(R.id.details);
+        delete = (ImageView) this.findViewById(R.id.delete);
 
 
 
@@ -182,6 +189,55 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        details.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle data = new Bundle();
+                data.putSerializable("deck",deck);
+                Intent intent = new Intent(MainActivity.this, OutsManifest.class);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MainActivity.this).
+                        setTitle("删除提示").
+                        setMessage("是否确认要删除已选牌？").
+                        setPositiveButton("确定",new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                                int[] stat = new int[13];
+                                deck = new Deck(stat);
+                                int startId = R.id.oppo1;
+                                int startDrawable = R.drawable.card_back_01;
+                                int shift;
+                                for(int i = 0; i < 9; i ++){
+                                    if(i < 2)
+                                        shift = 0;
+                                    else if(i < 5)
+                                        shift = 1;
+                                    else if(i < 7)
+                                        shift = 2;
+                                    else
+                                        shift = 3;
+                                    ImageView view = (ImageView) findViewById(startId + i + shift);
+                                    view.setImageResource(startDrawable + i);
+                                }
+                                details.setEnabled(false);
+                                details.setVisibility(View.INVISIBLE);
+                                res.setText(R.string.select_please);
+                            }
+                        }).setNegativeButton("取消",new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which){
+                            }
+                }).show();
+            }
+        });
     }
 
 
@@ -212,18 +268,27 @@ public class MainActivity extends Activity {
         ImageView v = (ImageView) findViewById(start + focus + shift);
         int resStart = R.drawable.card_0_0;
         int index;
+
         if (card[1] != 0)
             index = card[0] * 14 + card[1] - 1;
         else
             index = card[0] * 14;
-        v.setImageResource(index + resStart);
+
+        if(index == 0)
+            v.setImageResource(R.drawable.card_back_01 + focus);
+        else
+            v.setImageResource(index + resStart);
     }
 
     private class CalculateTask extends AsyncTask<String, Integer, int[]>{
         @Override
         protected void onPreExecute(){
-            yn.setText("Started");
-            res.setText("Started");
+            yn.setText(R.string.started);
+            res.setText(R.string.started);
+            details.setEnabled(false);
+            details.setVisibility(View.INVISIBLE);
+            int[] newStat = new int[13];
+            deck.initStat(newStat);
         }
         @Override
         protected int[] doInBackground(String... params) {
@@ -248,39 +313,34 @@ public class MainActivity extends Activity {
                 while(Deck.count != 0){
                     try {
                         Thread.sleep(200);
-                        publishProgress((int)(100 * (stat[0] * 1.0 / (stat[0] + stat[1] + stat[2]))));
-                        Log.i("Shark Completed",Integer.toOctalString(Deck.completed));
-                        Log.i("Shark Stat[0]", Integer.toOctalString(stat[0]));
-                        Log.i("Shark ratio", Integer.toOctalString(stat[0] / (Deck.completed / 100)));
+                        publishProgress((int)(100 * (deck.getStat()[0] * 1.0 / deck.getStat()[3])));
+//                        Log.i("Shark Completed",Integer.toOctalString(deck.getStat()[3]));
+//                        Log.i("Shark Stat[0]", Integer.toOctalString(stat[0]));
+//                        Log.i("Shark ratio", Integer.toOctalString(stat[0] / (deck.getStat()[3])/ 100));
                     }catch (Exception e){
                         Log.e("Progress Exception", e.getMessage());
                     }
                 }
-                int[] result = new int[4];
-                for(int i = 0; i < 3; i ++)
-                    result[i] = stat[i];
-                result[3] = result[0] + result[1] + result[2];
-                return result;
+                return stat;
             }
             return null;
         }
         @Override
         protected void onProgressUpdate(Integer... progress){
             res.setText(progress[0] + "%...");
-            yn.setText("Calculating");
+            yn.setText("计算中...");
         }
         @Override
         protected void onPostExecute(int[] result){
             res.setText((int)(100*(result[0] * 1.0 /result[3])) + "%");
             Log.i("Shark Final result", result[0] + " wins and "+ result[1]+" splits and " + result[2] +" loses out of " + result[3]);
-            int[] newStat = new int[3];
-            deck.initStat(newStat);
             String potS = potText.getText().toString();
             String callS = callText.getText().toString();
             calculate.setEnabled(true);
             Deck.count = 0;
-            Deck.completed = 0;
-            yn.setText("Y or N");
+            yn.setText(R.string.yorn);
+            details.setVisibility(View.VISIBLE);
+            details.setEnabled(true);
             if(potS.equals("") || callS.equals(""))
                 return;
             if(potS.length() > 9 || callS.length() > 9){
@@ -293,6 +353,7 @@ public class MainActivity extends Activity {
                 yn.setText("跟吧！");
             else
                 yn.setText("弃！");
+
         }
 
         protected boolean randomRankIlligal(){

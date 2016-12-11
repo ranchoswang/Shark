@@ -2,12 +2,10 @@ package com.meeting.rancho.shark;
 
 import java.io.Serializable;
 
-/**
- * Created by Administrator on 2016/11/18.
- */
+
 
 public class Deck implements Runnable, Serializable {
-    private boolean[] cardSet;
+    private boolean[] cardSet;// Default : true, means available in the Deck.
     private int num;
     private int[][] my;
     private int[][] oppo;
@@ -19,7 +17,6 @@ public class Deck implements Runnable, Serializable {
     private volatile int[] stat;
     private int loop;
     public static volatile int count = 0;
-    public static volatile int completed = 0;
 
 
     //Deep Clone
@@ -30,7 +27,7 @@ public class Deck implements Runnable, Serializable {
         this.oppo = new int[2][2];
         this.pubCard = new int[5][2];
         this.backUp = new int[10][2];
-        this.stat = new int[3];
+        this.stat = new int[13];
 
         this.cardSet = d.cardSet.clone();
         this.num = d.getNum();
@@ -58,7 +55,7 @@ public class Deck implements Runnable, Serializable {
         oppo = new int[2][2];
         pubCard = new int[5][2];
         backUp = new int[10][2];
-        this.stat = new int[3];
+        this.stat = new int[13];
         loop = 1;
     }
 
@@ -72,9 +69,13 @@ public class Deck implements Runnable, Serializable {
         oppo = new int[2][2];
         pubCard = new int[5][2];
         backUp = new int[10][2];
-        this.stat = stat;
+        if(stat.length != 13)
+            this.stat = new int[13];
+        else
+            this.stat = stat;
         loop = 1;
     }
+
 
     public int getNum(){
         return this.num;
@@ -172,6 +173,15 @@ public class Deck implements Runnable, Serializable {
     public void dealRiver(int[] card){
         putBack(pubCard[4]);
         pubCard[4] = deal(card);
+    }
+
+    public boolean hasCard(int[] card){
+        int suit = card[0];
+        int rank = card[1];
+        if(suit != 0 && rank != 0 )
+            return cardSet[suit * 13 + rank - 15];
+        else
+            return true;
     }
 
     //Only deal real card, cards like [0,12], [4,0] only return, but cannot really be dealt.
@@ -272,7 +282,7 @@ public class Deck implements Runnable, Serializable {
                 System.out.println(".\n" + (  (res == 0)?"I win.":((res == 2)?"I lose.":"Split.")));
             }
             setStat(res);
-            completed ++;
+            setStat(myDmnc);
             //0:win, 1: split, 2: lose.
         }
         count--;
@@ -355,10 +365,15 @@ public class Deck implements Runnable, Serializable {
 
     public synchronized void setStat(int res){
         stat[res] ++;
+        stat[3]++;
         //Log.i("setStat",Thread.currentThread().getId()+" stat changed. " + res);
     }
 
-    public synchronized int[] getStat(){
+    synchronized void setStat(int[] dominance){
+        stat[dominance[0]+4]++;
+    }
+
+        public synchronized int[] getStat(){
         return stat;
     }
 

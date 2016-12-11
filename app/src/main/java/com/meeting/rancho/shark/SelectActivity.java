@@ -50,7 +50,9 @@ public class SelectActivity extends Activity {
         cancel = (ImageView) findViewById(R.id.cancel);
         confirmation = (ImageView) findViewById(R.id.confirmation);
 
-        selectedSuit = spade;
+
+
+        selectedSuit = questionLeft;
         selectedSuitDrawable = R.drawable.suit_1_0;
 
         selectedRank = numbers[13];
@@ -83,19 +85,21 @@ public class SelectActivity extends Activity {
                 suit = (suit == 5)?0:suit;
                 selectedCard[0] = suit;
                 selectedCard[1] = rank;
-                switch (deck.getFocus()){
-                    case 0 : deck.dealOppo1(selectedCard);break;
-                    case 1:  deck.dealOppo2(selectedCard);break;
-                    case 2:  deck.dealFlop1(selectedCard);break;
-                    case 3:  deck.dealFlop2(selectedCard);break;
-                    case 4:  deck.dealFlop3(selectedCard);break;
-                    case 5:  deck.dealTurn(selectedCard);break;
-                    case 6:  deck.dealRiver(selectedCard);break;
-                    case 7:  deck.dealMy1(selectedCard);break;
-                    case 8:  deck.dealMy2(selectedCard);break;
-                    default:break;
-                }
 
+                if(deck.hasCard(selectedCard)) {
+                    switch (deck.getFocus()) {
+                        case 0:deck.dealOppo1(selectedCard);break;
+                        case 1:deck.dealOppo2(selectedCard);break;
+                        case 2:deck.dealFlop1(selectedCard);break;
+                        case 3:deck.dealFlop2(selectedCard);break;
+                        case 4:deck.dealFlop3(selectedCard);break;
+                        case 5:deck.dealTurn(selectedCard);break;
+                        case 6:deck.dealRiver(selectedCard);break;
+                        case 7:deck.dealMy1(selectedCard);break;
+                        case 8:deck.dealMy2(selectedCard);break;
+                        default:break;
+                    }
+                }
                 Intent intent = new Intent();
                 Bundle data = new Bundle();
                 data.putSerializable("deck", deck);
@@ -166,7 +170,7 @@ public class SelectActivity extends Activity {
         private int drawableStart;
         private int selectedSuitInt;
 
-        public NumberOnClickListener(ImageView v) {
+        private NumberOnClickListener(ImageView v) {
             this.v = v;
             index = v.getId() - numbers[0].getId();
             drawableStart = R.drawable.number_02_black;
@@ -207,7 +211,7 @@ public class SelectActivity extends Activity {
         private int index;//0 -3 means spade - diamond, 4 means question
         private int drawableStart;
 
-        public SuitOnClickListener(ImageView v) {
+        private SuitOnClickListener(ImageView v) {
             this.v = v;
             index = v.getId() - spade.getId();
             drawableStart = R.drawable.suit_1_0;

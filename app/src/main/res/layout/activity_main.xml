@@ -28,14 +28,14 @@
                 android:id="@+id/oppo1"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back"
+                android:src="@drawable/card_back_01"
                 android:layout_marginRight="20dp" />
 
             <ImageView
                 android:id="@+id/oppo2"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back_02" />
 
         </LinearLayout>
 
@@ -51,21 +51,21 @@
                 android:id="@+id/flop1"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back"
+                android:src="@drawable/card_back_03"
                 android:layout_marginRight="5dp"/>
 
             <ImageView
                 android:id="@+id/flop2"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back"
+                android:src="@drawable/card_back_04"
                 android:layout_marginRight="5dp"/>
 
             <ImageView
                 android:id="@+id/flop3"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back"
+                android:src="@drawable/card_back_05"
                 />
 
         </LinearLayout>
@@ -83,7 +83,7 @@
                 android:id="@+id/turn"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back"
+                android:src="@drawable/card_back_06"
                 android:layout_marginRight="20dp"
                 />
 
@@ -91,7 +91,7 @@
                 android:id="@+id/river"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back_07" />
 
         </LinearLayout>
 
@@ -108,7 +108,7 @@
                 android:id="@+id/my1"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back"
+                android:src="@drawable/card_back_08"
                 android:layout_marginRight="20dp"
                 />
 
@@ -116,7 +116,7 @@
                 android:id="@+id/my2"
                 android:layout_height="120dp"
                 android:layout_width="86dp"
-                android:src="@drawable/card_back" />
+                android:src="@drawable/card_back_09" />
 
         </LinearLayout>
     </LinearLayout>
@@ -142,8 +142,8 @@
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="请选牌"
+            android:textSize="15sp"
+            android:text="@string/select_please"
             android:layout_gravity="center"
             android:layout_marginBottom="30dp"
             />
@@ -205,7 +205,25 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:layout_marginTop="20dp"
-            android:text="Y or N"/>
+            android:text="@string/yorn"/>
+
+        <TextView
+            android:id="@+id/details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail"
+            android:textSize="14sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            android:visibility="invisible"
+            android:enabled="false"/>
+
+        <ImageView
+            android:id="@+id/delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/delete"/>
 
 
 
