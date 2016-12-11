@@ -53,12 +53,11 @@ public class SelectActivity extends Activity {
 
 
         selectedSuit = questionLeft;
-        selectedSuitDrawable = R.drawable.suit_1_0;
+        selectedSuitDrawable = R.drawable.suit_5_0;
 
         selectedRank = numbers[13];
         selectedRankDrawable = R.drawable.number_15_black_checked;
 
-        setSelectedView();
 
         spade.setOnClickListener(new SuitOnClickListener(spade));
 
@@ -129,7 +128,7 @@ public class SelectActivity extends Activity {
                     int index = numbers[0].getId() + i;
                     ImageView v = (ImageView) this.findViewById(index);
                     int numberStartDrawble = R.drawable.number_02_black;
-                    v.setImageResource(numberStartDrawble + 7 * i + 4);
+                    v.setImageResource(numberStartDrawble + 7 * i + 4);//set to color grey
                 }
             }
         }else if(selectedSuit == heart){
@@ -220,7 +219,10 @@ public class SelectActivity extends Activity {
             int last = selectedSuit.getId() - spade.getId();
             int now = v.getId() - spade.getId();
 
-            if (Math.abs(last - now) != 0 || Math.abs(last - now) != 2 || last == 5 || now == 5) {//Which needs to re-draw
+            Log.i("last n now: ", "last = " + last + " now =" + now);
+
+            if (Math.abs(last - now) == 1 || Math.abs(last - now) == 3 || (last == 4 && now != 4) || (last != 4 && now == 4)) {//Which needs to re-draw
+                Log.i("Redraw", "Starts to redraw");
                 int rankDrawableStart = R.drawable.number_02_black;
                 for (int i = 0; i < 14; i++) {
                     if (now == 0 || now == 2) {
@@ -242,7 +244,7 @@ public class SelectActivity extends Activity {
                // Log.i("Suit Tag", "selectedSuitDrawable + 1 = " + (selectedSuitDrawable + 1));
                 selectedSuit = v;
                 Log.i("Suit Selected", "Selected Suit is " + Integer.toString(selectedSuit.getId() - spade.getId()));
-                selectedSuitDrawable = drawableStart + index * 2;
+                selectedSuitDrawable = drawableStart + index * 2;//2 means every suit has 2 kinds drawble
                 v.setImageResource(selectedSuitDrawable);
             }
 
