@@ -22,12 +22,14 @@ public class OutsManifest extends Activity {
         Intent intent = this.getIntent();
         deck = (Deck) intent.getSerializableExtra("deck");
         int[] stat = deck.getStat();
-        String[] probability = new String[9];
-        String[] string = new String[18];
+        String[] probability = new String[10];
+        String[] string = new String[20];
+        string[0] = "我的成牌";
+        string[1] =  "概率";
         for(int i = 0; i < 9; i ++) {
             probability[i] = Integer.toString((int) (100 * (stat[4 + i] * 1.0 / stat[3]))) + "%";
-            string[2 * i] = outs[i];
-            string[2 * i + 1] = probability[i];
+            string[2 * i + 2] = outs[i];
+            string[2 * i + 3] = probability[i];
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.string, string);

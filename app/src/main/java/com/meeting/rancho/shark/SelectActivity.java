@@ -150,7 +150,7 @@ public class SelectActivity extends Activity {
                     v.setImageResource(numberStartDrawble + 7 * (i - 26) + 4);
                 }
             }
-        }else{
+        }else if(selectedSuit == diamond){
             for(int i = 39; i < 52; i ++){
                 if(!deck.getCardSet()[i]){
                     int index = numbers[0].getId() + i - 39;
@@ -160,8 +160,6 @@ public class SelectActivity extends Activity {
                 }
             }
         }
-
-
     }
 
     class NumberOnClickListener implements View.OnClickListener {

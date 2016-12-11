@@ -182,11 +182,19 @@ public class MainActivity extends Activity {
         calculate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(deck.getNum() != 52) {
+                if(randomRankIlligal()){
+                    Toast.makeText(getApplicationContext(), "请输入合法的卡牌", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(deck.getNum() == 52) {
+                    Toast.makeText(getApplicationContext(), "请至少输入一张实际牌", Toast.LENGTH_LONG).show();
+                    return;
+                }else{
                     CalculateTask calTask = new CalculateTask();
                     calTask.execute("");
                     calculate.setEnabled(false);
                 }
+
             }
         });
 
@@ -251,6 +259,21 @@ public class MainActivity extends Activity {
         }
     }
 
+    protected boolean randomRankIlligal(){
+        int[] suitmap = new int[15];
+        for(int i = 0; i < 2; i ++)
+            suitmap[deck.getMy()[i][1]] ++;
+        for(int i = 0; i < 5; i ++)
+            suitmap[deck.getPubCard()[i][1]] ++ ;
+        for(int i = 0; i < 2; i ++)
+            suitmap[deck.getOppo()[i][1]] ++ ;
+        for(int i = 1; i < 15; i ++){
+            if(suitmap[i] > 4 )
+                return true;
+        }
+        return false;
+    }
+
     public void setFocusView(Deck deck) {
         int focus = deck.getFocus();
         int[] card = deck.getFocusCard();
@@ -292,15 +315,10 @@ public class MainActivity extends Activity {
         }
         @Override
         protected int[] doInBackground(String... params) {
-            if (deck.getNum() == 52) {
-                Toast.makeText(getApplicationContext(), "请至少输入一张实际牌", Toast.LENGTH_LONG).show();
-            }else if(randomRankIlligal()){
-                Toast.makeText(getApplicationContext(), "请输入合法的牌",Toast.LENGTH_LONG).show();
-            } else{
                 int threadN = 5;
                 Thread threads[] = new Thread[threadN];
                 int complx = ((int) Math.log10(deck.getComplexity()) + 1);
-                int basicLoop = 10000;
+                int basicLoop = 5000;
                 deck.setLoop(basicLoop * complx);
                 int[] stat = deck.getStat();
                 for(int i = 0; i < threadN; i ++){
@@ -322,8 +340,6 @@ public class MainActivity extends Activity {
                     }
                 }
                 return stat;
-            }
-            return null;
         }
         @Override
         protected void onProgressUpdate(Integer... progress){
@@ -354,21 +370,6 @@ public class MainActivity extends Activity {
             else
                 yn.setText("弃！");
 
-        }
-
-        protected boolean randomRankIlligal(){
-            int[] suitmap = new int[15];
-            for(int i = 0; i < 2; i ++)
-                suitmap[deck.getMy()[i][1]] ++;
-            for(int i = 0; i < 5; i ++)
-                suitmap[deck.getPubCard()[i][1]] ++ ;
-            for(int i = 0; i < 2; i ++)
-                suitmap[deck.getOppo()[i][1]] ++ ;
-            for(int i = 1; i < 15; i ++){
-                if(suitmap[i] > 4 )
-                    return true;
-            }
-            return false;
         }
     }
 }
