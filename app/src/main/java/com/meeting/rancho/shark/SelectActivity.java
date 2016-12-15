@@ -1,11 +1,19 @@
 package com.meeting.rancho.shark;
 
+import android.content.Context;
 import android.content.Intent;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import java.io.InputStream;
 
 public class SelectActivity extends Activity {
     public final static int RESULT_POSITIVE_CODE = 100;
@@ -30,33 +38,18 @@ public class SelectActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        setContentView(R.layout.activity_select);
+
         deck = (Deck) intent.getSerializableExtra("deck");
 
-
-        spade = (ImageView) findViewById(R.id.spade);
-        heart = (ImageView) findViewById(R.id.heart);
-        club = (ImageView) findViewById(R.id.club);
-        diamond = (ImageView) findViewById(R.id.diamond);
-        questionLeft = (ImageView) findViewById(R.id.question_left);
+        setContentView(R.layout.activity_select);
 
 
-        numbers = new ImageView[14];
-        int numberStart = R.id.number_02;
-        for(int i = 0; i < 14; i ++ )
-            numbers[i] = (ImageView) findViewById(numberStart + i);
-
-
-        cancel = (ImageView) findViewById(R.id.cancel);
-        confirmation = (ImageView) findViewById(R.id.confirmation);
-
-        selectedSuit = spade;
-        selectedSuitDrawable = R.drawable.suit_1_0;
+        selectedSuit = questionLeft;
+        selectedSuitDrawable = R.drawable.suit_5_0;
 
         selectedRank = numbers[13];
         selectedRankDrawable = R.drawable.number_15_black_checked;
 
-        setSelectedView();
 
         spade.setOnClickListener(new SuitOnClickListener(spade));
 
@@ -83,19 +76,21 @@ public class SelectActivity extends Activity {
                 suit = (suit == 5)?0:suit;
                 selectedCard[0] = suit;
                 selectedCard[1] = rank;
-                switch (deck.getFocus()){
-                    case 0 : deck.dealOppo1(selectedCard);break;
-                    case 1:  deck.dealOppo2(selectedCard);break;
-                    case 2:  deck.dealFlop1(selectedCard);break;
-                    case 3:  deck.dealFlop2(selectedCard);break;
-                    case 4:  deck.dealFlop3(selectedCard);break;
-                    case 5:  deck.dealTurn(selectedCard);break;
-                    case 6:  deck.dealRiver(selectedCard);break;
-                    case 7:  deck.dealMy1(selectedCard);break;
-                    case 8:  deck.dealMy2(selectedCard);break;
-                    default:break;
-                }
 
+                if(deck.hasCard(selectedCard)) {
+                    switch (deck.getFocus()) {
+                        case 0:deck.dealOppo1(selectedCard);break;
+                        case 1:deck.dealOppo2(selectedCard);break;
+                        case 2:deck.dealFlop1(selectedCard);break;
+                        case 3:deck.dealFlop2(selectedCard);break;
+                        case 4:deck.dealFlop3(selectedCard);break;
+                        case 5:deck.dealTurn(selectedCard);break;
+                        case 6:deck.dealRiver(selectedCard);break;
+                        case 7:deck.dealMy1(selectedCard);break;
+                        case 8:deck.dealMy2(selectedCard);break;
+                        default:break;
+                    }
+                }
                 Intent intent = new Intent();
                 Bundle data = new Bundle();
                 data.putSerializable("deck", deck);
@@ -116,6 +111,81 @@ public class SelectActivity extends Activity {
 
     }
 
+    @Override
+    public void setContentView(int layoutResId){
+        super.setContentView(R.layout.activity_select);
+
+        LinearLayout background = (LinearLayout) this.findViewById(R.id.background);
+
+        spade = (ImageView) findViewById(R.id.spade);
+        heart = (ImageView) findViewById(R.id.heart);
+        club = (ImageView) findViewById(R.id.club);
+        diamond = (ImageView) findViewById(R.id.diamond);
+        questionLeft = (ImageView) findViewById(R.id.question_left);
+
+
+        numbers = new ImageView[14];
+        int numberStart = R.id.number_02;
+        for(int i = 0; i < 14; i ++ )
+            numbers[i] = (ImageView) findViewById(numberStart + i);
+
+
+        cancel = (ImageView) findViewById(R.id.cancel);
+        confirmation = (ImageView) findViewById(R.id.confirmation);
+
+        background.setBackgroundDrawable(myGetDrawable(R.drawable.selectbg, this));
+
+        spade.setImageDrawable(myGetDrawable(R.drawable.suit_1_1, this));
+        heart.setImageDrawable(myGetDrawable(R.drawable.suit_2_1, this));
+        club.setImageDrawable(myGetDrawable(R.drawable.suit_3_1,this));
+        diamond.setImageDrawable(myGetDrawable(R.drawable.suit_4_1,this));
+        questionLeft.setImageDrawable(myGetDrawable(R.drawable.suit_5_0, this));
+
+        for(int i = 0; i < 13; i ++)
+            numbers[i].setImageDrawable(myGetDrawable(R.drawable.number_02_blue + i * 7 ,this));
+        numbers[13].setImageDrawable(myGetDrawable(R.drawable.number_15_blue_checked, this));
+
+        cancel.setImageDrawable(myGetDrawable(R.drawable.cancel, this));
+        confirmation.setImageDrawable(myGetDrawable(R.drawable.confirmation, this));
+
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+        int cancelWidth = dp2px(this, 40);
+        int cancelHeight = dp2px(this, 40);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(cancelWidth, cancelHeight);
+        layoutParams.setMargins(0,0,screenWidth * 3 / 5,0);
+        cancel.setLayoutParams(layoutParams);
+
+    }
+
+    public BitmapDrawable myGetDrawable(int resId, Context context){
+        try {
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inPreferredConfig = Bitmap.Config.RGB_565;
+            opt.inPurgeable = true;
+            opt.inInputShareable = true;
+            InputStream is = context.getResources().openRawResource(resId);
+            Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
+            return new BitmapDrawable(context.getResources(), bitmap);
+        }catch (Exception e){
+            Log.e("Close Exception", e.getMessage());
+        }
+        return null;
+    }
+
+    private int dp2px(Context context, float dpValue){
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dpValue * scale + 0.5f);
+    }
+
+    private int px2dp(Context context, float pxValue){
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(pxValue / scale + 0.5f);
+    }
+
     protected void setSelectedView(){
         if(selectedSuit == null)
             return;
@@ -125,7 +195,8 @@ public class SelectActivity extends Activity {
                     int index = numbers[0].getId() + i;
                     ImageView v = (ImageView) this.findViewById(index);
                     int numberStartDrawble = R.drawable.number_02_black;
-                    v.setImageResource(numberStartDrawble + 7 * i + 4);
+                    v.setImageDrawable(myGetDrawable(numberStartDrawble + 7 * i + 4 ,this));
+                    //v.setImageResource(numberStartDrawble + 7 * i + 4);//set to color grey
                 }
             }
         }else if(selectedSuit == heart){
@@ -134,7 +205,8 @@ public class SelectActivity extends Activity {
                     int index = numbers[0].getId() + i - 13;
                     ImageView v = (ImageView) this.findViewById(index);
                     int numberStartDrawble = R.drawable.number_02_black;
-                    v.setImageResource(numberStartDrawble + 7 * (i - 13) + 4);
+                    v.setImageDrawable(myGetDrawable(numberStartDrawble + 7 * (i - 13) + 4 ,this));
+                    //v.setImageResource(numberStartDrawble + 7 * (i - 13) + 4);
                 }
             }
         }else if(selectedSuit == club){
@@ -143,21 +215,21 @@ public class SelectActivity extends Activity {
                     int index = numbers[0].getId() + i - 26;
                     ImageView v = (ImageView) this.findViewById(index);
                     int numberStartDrawble = R.drawable.number_02_black;
-                    v.setImageResource(numberStartDrawble + 7 * (i - 26) + 4);
+                    v.setImageDrawable(myGetDrawable(numberStartDrawble + 7 * (i - 26) + 4 ,this));
+                   // v.setImageResource(numberStartDrawble + 7 * (i - 26) + 4);
                 }
             }
-        }else{
+        }else if(selectedSuit == diamond){
             for(int i = 39; i < 52; i ++){
                 if(!deck.getCardSet()[i]){
                     int index = numbers[0].getId() + i - 39;
                     ImageView v = (ImageView) this.findViewById(index);
                     int numberStartDrawble = R.drawable.number_02_black;
-                    v.setImageResource(numberStartDrawble + 7 * (i - 39) + 4);
+                    v.setImageDrawable(myGetDrawable(numberStartDrawble + 7 * (i - 39) + 4 ,this));
+                    //v.setImageResource(numberStartDrawble + 7 * (i - 39) + 4);
                 }
             }
         }
-
-
     }
 
     class NumberOnClickListener implements View.OnClickListener {
@@ -166,7 +238,7 @@ public class SelectActivity extends Activity {
         private int drawableStart;
         private int selectedSuitInt;
 
-        public NumberOnClickListener(ImageView v) {
+        private NumberOnClickListener(ImageView v) {
             this.v = v;
             index = v.getId() - numbers[0].getId();
             drawableStart = R.drawable.number_02_black;
@@ -184,11 +256,11 @@ public class SelectActivity extends Activity {
             }
             Log.i("tag", "case = " + selectedSuitInt);
             switch (selectedSuit.getId() - spade.getId()) {
-                case 0:selectedRank.setImageResource((selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart);break;
-                case 1:selectedRank.setImageResource(5 + (selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart);break;
-                case 2:selectedRank.setImageResource((selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart);break;
-                case 3:selectedRank.setImageResource(5 + (selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart);break;
-                case 4:selectedRank.setImageResource(2 + (selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart);break;
+                case 0:selectedRank.setImageDrawable(myGetDrawable((selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart ,SelectActivity.this));break;
+                case 1:selectedRank.setImageDrawable(myGetDrawable(5 + (selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart, SelectActivity.this));break;
+                case 2:selectedRank.setImageDrawable(myGetDrawable((selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart, SelectActivity.this));break;
+                case 3:selectedRank.setImageDrawable(myGetDrawable(5 + (selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart, SelectActivity.this));break;
+                case 4:selectedRank.setImageDrawable(myGetDrawable(2 + (selectedRankDrawable - drawableStart) / 7 * 7 + drawableStart, SelectActivity.this));break;
                 default:break;
             }
             if (selectedSuit == spade || selectedSuit == club)
@@ -198,7 +270,7 @@ public class SelectActivity extends Activity {
             else
                 selectedRankDrawable = drawableStart + 7 * index + 3;
             selectedRank = v;
-            v.setImageResource(selectedRankDrawable);
+            v.setImageDrawable(myGetDrawable(selectedRankDrawable, SelectActivity.this));
         }
     }
 
@@ -207,7 +279,7 @@ public class SelectActivity extends Activity {
         private int index;//0 -3 means spade - diamond, 4 means question
         private int drawableStart;
 
-        public SuitOnClickListener(ImageView v) {
+        private SuitOnClickListener(ImageView v) {
             this.v = v;
             index = v.getId() - spade.getId();
             drawableStart = R.drawable.suit_1_0;
@@ -218,17 +290,21 @@ public class SelectActivity extends Activity {
             int last = selectedSuit.getId() - spade.getId();
             int now = v.getId() - spade.getId();
 
-            if (Math.abs(last - now) != 0 || Math.abs(last - now) != 2 || last == 5 || now == 5) {//Which needs to re-draw
+            Log.i("last n now: ", "last = " + last + " now =" + now);
+
+            if (Math.abs(last - now) == 1 || Math.abs(last - now) == 3 || (last == 4 && now != 4) || (last != 4 && now == 4)) {//Which needs to re-draw
+                Log.i("Redraw", "Starts to redraw");
                 int rankDrawableStart = R.drawable.number_02_black;
                 for (int i = 0; i < 14; i++) {
                     if (now == 0 || now == 2) {
-                        numbers[i].setImageResource(rankDrawableStart + 7 * i);
+                        numbers[i].setImageDrawable(myGetDrawable(rankDrawableStart + 7 * i, SelectActivity.this));
                        // Log.i("Suit Tag", "Black Pressed. Loop:  " + i);
                     } else if (now == 1 || now == 3) {
-                        numbers[i].setImageResource(rankDrawableStart + 7 * i + 5);
+                        numbers[i].setImageDrawable(myGetDrawable(rankDrawableStart + 7 * i + 5, SelectActivity.this));
+                        //numbers[i].setImageResource(rankDrawableStart + 7 * i + 5);
                       //  Log.i("Tag", "Red Pressed. Loop:  " + i);
                     } else {
-                        numbers[i].setImageResource(rankDrawableStart + 7 * i + 2);
+                        numbers[i].setImageDrawable(myGetDrawable(rankDrawableStart + 7 * i + 2, SelectActivity.this));
                       //  Log.i("Tag", "Blue Pressed. Loop:  " + i);
                     }
                 }
@@ -236,12 +312,13 @@ public class SelectActivity extends Activity {
 
             if (selectedSuit != v) {
                // Log.i("Suit Tag", "selectedSuitDrawable = " + selectedSuitDrawable);
-                selectedSuit.setImageResource(selectedSuitDrawable + 1);
+                selectedSuit.setImageDrawable(myGetDrawable(selectedSuitDrawable + 1, SelectActivity.this));
                // Log.i("Suit Tag", "selectedSuitDrawable + 1 = " + (selectedSuitDrawable + 1));
                 selectedSuit = v;
                 Log.i("Suit Selected", "Selected Suit is " + Integer.toString(selectedSuit.getId() - spade.getId()));
-                selectedSuitDrawable = drawableStart + index * 2;
-                v.setImageResource(selectedSuitDrawable);
+                selectedSuitDrawable = drawableStart + index * 2;//2 means every suit has 2 kinds drawble
+                v.setImageDrawable(myGetDrawable(selectedSuitDrawable, SelectActivity.this));
+                //v.setImageResource(selectedSuitDrawable);
             }
 
             setSelectedView();

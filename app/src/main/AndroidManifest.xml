@@ -7,16 +7,20 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:versionCode="2"
+        android:versionName="1.1"
         android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
-        <activity android:name="com.meeting.rancho.shark.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.meeting.rancho.shark.SelectActivity">
-        </activity>
+        <activity android:name=".SelectActivity"></activity>
+        <activity
+            android:name=".OutsManifest"
+            android:label="@string/title_activity_outs_manifest"></activity>
     </application>
 
 </manifest>
