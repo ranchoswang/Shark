@@ -2,6 +2,10 @@ package com.meeting.rancho.shark;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -10,6 +14,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+
+import java.io.InputStream;
 
 public class MainActivity extends Activity {
     private  Deck deck;
@@ -45,27 +51,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         int[] stat = new int[13];
         deck = new Deck(stat);
+
         setContentView(R.layout.activity_main);
-
-        oppo1 = (ImageView) this.findViewById(R.id.oppo1);
-        oppo2 = (ImageView) this.findViewById(R.id.oppo2);
-        flop1 = (ImageView) this.findViewById(R.id.flop1);
-        flop2 = (ImageView) this.findViewById(R.id.flop2);
-        flop3 = (ImageView) this.findViewById(R.id.flop3);
-        turn = (ImageView) this.findViewById(R.id.turn);
-        river = (ImageView) this.findViewById(R.id.river);
-        my1 = (ImageView) this.findViewById(R.id.my1);
-        my2 = (ImageView) this.findViewById(R.id.my2);
-
-        calculate = (Button) this.findViewById(R.id.calculate);
-        res = (TextView) this.findViewById(R.id.res);
-        yn = (TextView) this.findViewById(R.id.yn);
-
-        potText = (EditText) this.findViewById(R.id.pot);
-        callText = (EditText) this.findViewById(R.id.call) ;
-
-        details = (TextView) this.findViewById(R.id.details);
-        delete = (ImageView) this.findViewById(R.id.delete);
 
 
 
@@ -182,8 +169,12 @@ public class MainActivity extends Activity {
         calculate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(randomRankIlligal()){
+                if(randomRankIllegal()){
                     Toast.makeText(getApplicationContext(), "请输入合法的卡牌", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if(pubRankIllegal()){
+                    Toast.makeText(getApplicationContext(), "公共牌不支持随机牌", Toast.LENGTH_LONG).show();
                     return;
                 }
                 if(deck.getNum() == 52) {
@@ -193,6 +184,7 @@ public class MainActivity extends Activity {
                     CalculateTask calTask = new CalculateTask();
                     calTask.execute("");
                     calculate.setEnabled(false);
+                    delete.setEnabled(false);
                 }
 
             }
@@ -233,7 +225,7 @@ public class MainActivity extends Activity {
                                     else
                                         shift = 3;
                                     ImageView view = (ImageView) findViewById(startId + i + shift);
-                                    view.setImageResource(startDrawable + i);
+                                    view.setImageDrawable(myGetDrawable((startDrawable + i),MainActivity.this));
                                 }
                                 details.setEnabled(false);
                                 details.setVisibility(View.INVISIBLE);
@@ -248,6 +240,64 @@ public class MainActivity extends Activity {
         });
     }
 
+    public BitmapDrawable myGetDrawable(int resId, Context context){
+        try {
+            BitmapFactory.Options opt = new BitmapFactory.Options();
+            opt.inPreferredConfig = Bitmap.Config.RGB_565;
+            opt.inPurgeable = true;
+            opt.inInputShareable = true;
+            InputStream is = context.getResources().openRawResource(resId);
+            Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
+            return new BitmapDrawable(context.getResources(), bitmap);
+        }catch (Exception e){
+            Log.e("Close Exception", e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void setContentView(int layoutResId){
+        super.setContentView(layoutResId);
+        LinearLayout left = (LinearLayout) this.findViewById(R.id.left);
+        LinearLayout right = (LinearLayout) this.findViewById(R.id.right) ;
+
+        oppo1 = (ImageView) this.findViewById(R.id.oppo1);
+        oppo2 = (ImageView) this.findViewById(R.id.oppo2);
+        flop1 = (ImageView) this.findViewById(R.id.flop1);
+        flop2 = (ImageView) this.findViewById(R.id.flop2);
+        flop3 = (ImageView) this.findViewById(R.id.flop3);
+        turn = (ImageView) this.findViewById(R.id.turn);
+        river = (ImageView) this.findViewById(R.id.river);
+        my1 = (ImageView) this.findViewById(R.id.my1);
+        my2 = (ImageView) this.findViewById(R.id.my2);
+
+        calculate = (Button) this.findViewById(R.id.calculate);
+        res = (TextView) this.findViewById(R.id.res);
+        yn = (TextView) this.findViewById(R.id.yn);
+
+        potText = (EditText) this.findViewById(R.id.pot);
+        callText = (EditText) this.findViewById(R.id.call) ;
+
+        details = (TextView) this.findViewById(R.id.details);
+        delete = (ImageView) this.findViewById(R.id.delete);
+
+
+
+        left.setBackgroundDrawable(myGetDrawable(R.drawable.table_surface,this));
+        right.setBackgroundDrawable(myGetDrawable(R.drawable.aside_bg,this));
+        oppo1.setImageDrawable(myGetDrawable(R.drawable.card_back_01, this));
+        oppo2.setImageDrawable(myGetDrawable(R.drawable.card_back_02,this));
+        flop1.setImageDrawable(myGetDrawable(R.drawable.card_back_03,this));
+        flop2.setImageDrawable(myGetDrawable(R.drawable.card_back_04,this));
+        flop3.setImageDrawable(myGetDrawable(R.drawable.card_back_05,this));
+        turn.setImageDrawable(myGetDrawable(R.drawable.card_back_06,this));
+        river.setImageDrawable(myGetDrawable(R.drawable.card_back_07,this));
+        my1.setImageDrawable(myGetDrawable(R.drawable.card_back_08,this));
+        my2.setImageDrawable(myGetDrawable(R.drawable.card_back_09,this));
+        delete.setImageDrawable(myGetDrawable(R.drawable.delete,this));
+        calculate.setBackgroundDrawable(myGetDrawable(R.drawable.cal_button, this));
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent){
@@ -259,7 +309,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    protected boolean randomRankIlligal(){
+    protected boolean randomRankIllegal(){
         int[] suitmap = new int[15];
         for(int i = 0; i < 2; i ++)
             suitmap[deck.getMy()[i][1]] ++;
@@ -269,6 +319,17 @@ public class MainActivity extends Activity {
             suitmap[deck.getOppo()[i][1]] ++ ;
         for(int i = 1; i < 15; i ++){
             if(suitmap[i] > 4 )
+                return true;
+        }
+        return false;
+    }
+
+    protected boolean pubRankIllegal(){
+        int[][] pubCard = deck.getPubCard();
+        for(int i = 0; i < pubCard.length; i ++){
+            int suit = pubCard[i][0];
+            int rank = pubCard[i][1];
+            if((suit == 0 && rank != 0) || (rank == 0 && suit != 0))
                 return true;
         }
         return false;
@@ -298,9 +359,9 @@ public class MainActivity extends Activity {
             index = card[0] * 14;
 
         if(index == 0)
-            v.setImageResource(R.drawable.card_back_01 + focus);
+            v.setImageDrawable(myGetDrawable(R.drawable.card_back_01 + focus, this));
         else
-            v.setImageResource(index + resStart);
+            v.setImageDrawable(myGetDrawable((index + resStart),this));
     }
 
     private class CalculateTask extends AsyncTask<String, Integer, int[]>{
@@ -318,7 +379,8 @@ public class MainActivity extends Activity {
                 int threadN = 5;
                 Thread threads[] = new Thread[threadN];
                 int complx = ((int) Math.log10(deck.getComplexity()) + 1);
-                int basicLoop = 5000;
+                Log.i("Complx", "Compexity : " + complx);
+                int basicLoop = 10000;
                 deck.setLoop(basicLoop * complx);
                 int[] stat = deck.getStat();
                 for(int i = 0; i < threadN; i ++){
@@ -343,16 +405,19 @@ public class MainActivity extends Activity {
         }
         @Override
         protected void onProgressUpdate(Integer... progress){
-            res.setText(progress[0] + "%...");
+            String text = progress[0] + "%...";
+            res.setText(text);
             yn.setText("计算中...");
         }
         @Override
         protected void onPostExecute(int[] result){
-            res.setText((int)(100*(result[0] * 1.0 /result[3])) + "%");
-            Log.i("Shark Final result", result[0] + " wins and "+ result[1]+" splits and " + result[2] +" loses out of " + result[3]);
+            String text = (int)Math.round(100*(result[0] * 1.0 /result[3])) + "%";
+            res.setText(text);
+            //Log.i("Shark Final result", result[0] + " wins and "+ result[1]+" splits and " + result[2] +" loses out of " + result[3]);
             String potS = potText.getText().toString();
             String callS = callText.getText().toString();
             calculate.setEnabled(true);
+            delete.setEnabled(true);
             Deck.count = 0;
             yn.setText(R.string.yorn);
             details.setVisibility(View.VISIBLE);

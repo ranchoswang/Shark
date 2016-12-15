@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Shark</string>
+    <string name="app_name">德扑概率计算器</string>
     <string name="hello_world">Hello World</string>
     <string name="card_height">120dp</string>
     <string name="card_width">86dp</string>
@@ -17,8 +17,5 @@
     <string name="my_outs">我的成牌</string>
     <string name="probability">概率</string>
     <string name="select_please">请选牌</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_outs_manifest">OutsManifest</string>
 </resources>

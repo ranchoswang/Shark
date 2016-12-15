@@ -27,7 +27,7 @@ public class OutsManifest extends Activity {
         string[0] = "我的成牌";
         string[1] =  "概率";
         for(int i = 0; i < 9; i ++) {
-            probability[i] = Integer.toString((int) (100 * (stat[4 + i] * 1.0 / stat[3]))) + "%";
+            probability[i] = Integer.toString((int) Math.round(100 * (stat[4 + i] * 1.0 / stat[3]))) + "%";
             string[2 * i + 2] = outs[i];
             string[2 * i + 3] = probability[i];
         }
