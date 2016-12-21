@@ -428,9 +428,10 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(),"底池或者跟注数字太大",Toast.LENGTH_LONG).show();
                 return;
             }
-            int pot = Integer.parseInt(potS);
-            int call = Integer.parseInt(callS);
-            if(pot * result[0] * 1.0 - call * result[2] * 1.0 > 0)
+            double pot = Integer.parseInt(potS);
+            double call = Integer.parseInt(callS);
+            Log.i("result info", pot+ " " + result[0]+ " " + call +" " + result[2] + " " + (pot * result[0] * 1.0 - call * result[2] * 1.0));
+            if(pot * result[0] - call * result[2] > 0)
                 yn.setText("跟吧！");
             else
                 yn.setText("弃！");
